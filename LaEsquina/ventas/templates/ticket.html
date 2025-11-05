@@ -1,0 +1,96 @@
+{% load static %}
+{% load humanize %}
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Ticket de Venta</title>
+    <style>
+        @page {
+            size: 58mm 200mm;
+            margin: 0.5cm 0.5cm 0.5cm 0.5cm;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 10px;
+            line-height: 1.3;
+        }
+        .container {
+            width: 100%;
+            padding: 5px;
+        }
+        .text-center {
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+        }
+        td {
+            padding: 2px 4px;
+        }
+        .total {
+            font-weight: bold;
+            text-align: right;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center">
+                # Ticket: {{num_ticket}} <br>
+                Fecha: {{fecha}} <br>
+                <h5> <b>{{empresa.nombre_empresa}} </b></h5>
+                {{empresa.direccion}} <br>
+                {{empresa.telefono}}<br>
+                Cliente: {{cliente}} <br>
+                <br>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 text-center">
+                <table>
+                    <thead>
+                        <tr>
+                            <td style="width:20%"> <b>Cant.</b></td>
+                            <td style="width:60%"> <b> Producto</b> </td>
+                            <td style="width:20%"> <b>Precio</b>  </td>
+                        </tr>
+                    </thead>
+                    <tbody class="text-dark">
+                        {% for i in items %}
+                        {% with subtotal=i.precio_unitario_venta|floatformat:2 %}
+                        <tr>
+                            <td>{{i.cantidad}}</td>
+                            <td>{{i.id_producto.nombre_producto}}</td>
+                            <td>${{subtotal|floatformat:2|intcomma}}</td>
+                        </tr>
+                        {% endwith %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                {% if iva == "true" or iva == "True" %}
+                <h5 style="text-align: right;"> <b> Subtotal: ${{subtotal|floatformat:"2"|intcomma}}</b></h5>
+                <h5 style="text-align: right;"> <b> Iva: ${{iva_suma|floatformat:"2"|intcomma}}</b></h5>
+                {% endif %}
+                <h5 style="text-align: right;"> <b> Total: ${{total|floatformat:"2"|intcomma}}</b></h5>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <p style="text-align: center;">GRACIAS POR SU PREFERENCIA</P>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

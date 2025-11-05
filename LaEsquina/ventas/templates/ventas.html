@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+<div>
+    <div id="EliminarPersonalModal" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-info">
+                <h5 class="modal-title text-dark">Eliminar</h5>
+            </div>
+            <div class="modal-body bg-dark text-white">
+                <p class="labelmodal">¿Estás seguro?</p>
+                <form method="POST" action="{% url 'DeleteVenta' %}">{% csrf_token %}
+                    <input type="hidden" id="id_venta_eliminar" name="id_venta_eliminar">
+            </div>
+            <div class="modal-footer bg-dark text-white">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">
+                    Volver
+                </button>
+                <button type="submit" class="btn btn-success">
+                    Aceptar
+                </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+    <div class="row">
+    <div class="col-md-12">
+        <h3 class="text-center">Ventas   <i class="fas fa-cash-register"></i></h3>
+            <div class="col-md-3 pb-2">
+                <a href="{% url 'AddVenta' %}">
+                    <button type="button" class="btn btn-success">
+                        Agregar Venta
+                        <i class="fas fa-plus-circle"></i>
+                    </button>
+                </a>
+            </div>
+        </h3>
+        <div class="card card-body" style="overflow:scroll">
+            <table class="table table-hover table-primary" id="myTable">
+                <thead>
+                    <tr>
+                        <th># ID</th>
+                        <th>Fecha</th>
+                        <th>Nombre Producto</th>
+                        <th>Total Venta</th>
+                        <th>Opciones</th>
+                    </tr>
+                </thead>
+                <tbody class="text-dark">
+                    {% for i in ventas %}
+                    <tr>
+                        <td>{{i.id_venta}}</td>
+                        <td>{{i.fecha_hora|date:"d/m/Y H:i"}}</td>
+                        <td>{% for detalle in i.detalle_venta_set.all %}
+                            {{detalle.id_producto.nombre_producto}}<br>
+                            {% endfor %}</td>
+                        <td>${{i.total_venta|floatformat:2}}</td>
+                        <td>
+                            <a href="{% url 'ExportPDF' i.id_venta 0 %}" target="_blank" class="btn btn-info btn-sm">
+                                <i class="fas fa-print"></i> Imprimir
+                            </a>
+                            <button onclick="eliminarVenta('{{i.id_venta}}')" class="btn btn-danger btn-sm"
+                                data-toggle="modal" href="#EliminarPersonalModal">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}
